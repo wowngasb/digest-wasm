@@ -1,8 +1,6 @@
 @echo off
 
-wasm-pack build --release --target web --out-dir dist/lib
-cd node
+wasm-pack build --release --target web --no-pack --out-dir dist/lib
+
 node patch.mjs
 node test.js
-node test.mjs
-cd ../

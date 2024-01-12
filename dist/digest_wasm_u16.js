@@ -1,8 +1,4 @@
 let wasm;
-export function __wbg_set_wasm(val) {
-    wasm = val;
-}
-
 
 const heap = new Array(128).fill(undefined);
 
@@ -24,11 +20,9 @@ function takeObject(idx) {
     return ret;
 }
 
-const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
+const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
-let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
-
-cachedTextDecoder.decode();
+if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
 
 let cachedUint8Memory0 = null;
 
@@ -83,9 +77,7 @@ function __wbg_adapter_16(arg0, arg1, arg2) {
 
 let WASM_VECTOR_LEN = 0;
 
-const lTextEncoder = typeof TextEncoder === 'undefined' ? (0, module.require)('util').TextEncoder : TextEncoder;
-
-let cachedTextEncoder = new lTextEncoder('utf-8');
+const cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available') } } );
 
 const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
     ? function (arg, view) {
@@ -167,7 +159,7 @@ function __wbg_adapter_42(arg0, arg1, arg2, arg3) {
 
 /**
 */
-export class Md5 {
+class Md5 {
 
     static __wrap(ptr) {
         ptr = ptr >>> 0;
@@ -209,10 +201,10 @@ export class Md5 {
     * @param {Uint8Array} data
     * @returns {Promise<string>}
     */
-    static digestU8(data) {
+    static digest_u8(data) {
         const ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_export_2);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.md5_digestU8(ptr0, len0);
+        const ret = wasm.md5_digest_u8(ptr0, len0);
         return takeObject(ret);
     }
     /**
@@ -248,7 +240,7 @@ export class Md5 {
 }
 /**
 */
-export class Sha256 {
+class Sha256 {
 
     static __wrap(ptr) {
         ptr = ptr >>> 0;
@@ -290,10 +282,10 @@ export class Sha256 {
     * @param {Uint8Array} data
     * @returns {Promise<string>}
     */
-    static digestU8(data) {
+    static digest_u8(data) {
         const ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_export_2);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.sha256_digestU8(ptr0, len0);
+        const ret = wasm.sha256_digest_u8(ptr0, len0);
         return takeObject(ret);
     }
     /**
@@ -329,7 +321,7 @@ export class Sha256 {
 }
 /**
 */
-export class Sha512 {
+class Sha512 {
 
     static __wrap(ptr) {
         ptr = ptr >>> 0;
@@ -371,10 +363,10 @@ export class Sha512 {
     * @param {Uint8Array} data
     * @returns {Promise<string>}
     */
-    static digestU8(data) {
+    static digest_u8(data) {
         const ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_export_2);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.sha512_digestU8(ptr0, len0);
+        const ret = wasm.sha512_digest_u8(ptr0, len0);
         return takeObject(ret);
     }
     /**
@@ -409,119 +401,181 @@ export class Sha512 {
     }
 }
 
-export function __wbindgen_object_drop_ref(arg0) {
-    takeObject(arg0);
-};
-
-export function __wbindgen_string_new(arg0, arg1) {
-    const ret = getStringFromWasm0(arg0, arg1);
-    return addHeapObject(ret);
-};
-
-export function __wbindgen_cb_drop(arg0) {
-    const obj = takeObject(arg0).original;
-    if (obj.cnt-- == 1) {
-        obj.a = 0;
-        return true;
-    }
-    const ret = false;
-    return ret;
-};
-
-export function __wbg_queueMicrotask_4d890031a6a5a50c(arg0) {
-    queueMicrotask(getObject(arg0));
-};
-
-export function __wbg_queueMicrotask_adae4bc085237231(arg0) {
-    const ret = getObject(arg0).queueMicrotask;
-    return addHeapObject(ret);
-};
-
-export function __wbindgen_is_function(arg0) {
-    const ret = typeof(getObject(arg0)) === 'function';
-    return ret;
-};
-
-export function __wbg_newnoargs_c62ea9419c21fbac(arg0, arg1) {
-    const ret = new Function(getStringFromWasm0(arg0, arg1));
-    return addHeapObject(ret);
-};
-
-export function __wbg_call_90c26b09837aba1c() { return handleError(function (arg0, arg1) {
-    const ret = getObject(arg0).call(getObject(arg1));
-    return addHeapObject(ret);
-}, arguments) };
-
-export function __wbindgen_object_clone_ref(arg0) {
-    const ret = getObject(arg0);
-    return addHeapObject(ret);
-};
-
-export function __wbg_self_f0e34d89f33b99fd() { return handleError(function () {
-    const ret = self.self;
-    return addHeapObject(ret);
-}, arguments) };
-
-export function __wbg_window_d3b084224f4774d7() { return handleError(function () {
-    const ret = window.window;
-    return addHeapObject(ret);
-}, arguments) };
-
-export function __wbg_globalThis_9caa27ff917c6860() { return handleError(function () {
-    const ret = globalThis.globalThis;
-    return addHeapObject(ret);
-}, arguments) };
-
-export function __wbg_global_35dfdd59a4da3e74() { return handleError(function () {
-    const ret = global.global;
-    return addHeapObject(ret);
-}, arguments) };
-
-export function __wbindgen_is_undefined(arg0) {
-    const ret = getObject(arg0) === undefined;
-    return ret;
-};
-
-export function __wbg_call_5da1969d7cd31ccd() { return handleError(function (arg0, arg1, arg2) {
-    const ret = getObject(arg0).call(getObject(arg1), getObject(arg2));
-    return addHeapObject(ret);
-}, arguments) };
-
-export function __wbg_new_60f57089c7563e81(arg0, arg1) {
-    try {
-        var state0 = {a: arg0, b: arg1};
-        var cb0 = (arg0, arg1) => {
-            const a = state0.a;
-            state0.a = 0;
-            try {
-                return __wbg_adapter_42(a, state0.b, arg0, arg1);
-            } finally {
-                state0.a = a;
-            }
-        };
-        const ret = new Promise(cb0);
+function __wbg_get_imports() {
+    const imports = {};
+    imports.wbg = {};
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
+    };
+    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
+        const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
-    } finally {
-        state0.a = state0.b = 0;
+    };
+    imports.wbg.__wbindgen_cb_drop = function(arg0) {
+        const obj = takeObject(arg0).original;
+        if (obj.cnt-- == 1) {
+            obj.a = 0;
+            return true;
+        }
+        const ret = false;
+        return ret;
+    };
+    imports.wbg.__wbg_queueMicrotask_4d890031a6a5a50c = function(arg0) {
+        queueMicrotask(getObject(arg0));
+    };
+    imports.wbg.__wbg_queueMicrotask_adae4bc085237231 = function(arg0) {
+        const ret = getObject(arg0).queueMicrotask;
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_is_function = function(arg0) {
+        const ret = typeof(getObject(arg0)) === 'function';
+        return ret;
+    };
+    imports.wbg.__wbg_newnoargs_c62ea9419c21fbac = function(arg0, arg1) {
+        const ret = new Function(getStringFromWasm0(arg0, arg1));
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbg_call_90c26b09837aba1c = function() { return handleError(function (arg0, arg1) {
+        const ret = getObject(arg0).call(getObject(arg1));
+        return addHeapObject(ret);
+    }, arguments) };
+    imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
+        const ret = getObject(arg0);
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbg_self_f0e34d89f33b99fd = function() { return handleError(function () {
+        const ret = self.self;
+        return addHeapObject(ret);
+    }, arguments) };
+    imports.wbg.__wbg_window_d3b084224f4774d7 = function() { return handleError(function () {
+        const ret = window.window;
+        return addHeapObject(ret);
+    }, arguments) };
+    imports.wbg.__wbg_globalThis_9caa27ff917c6860 = function() { return handleError(function () {
+        const ret = globalThis.globalThis;
+        return addHeapObject(ret);
+    }, arguments) };
+    imports.wbg.__wbg_global_35dfdd59a4da3e74 = function() { return handleError(function () {
+        const ret = global.global;
+        return addHeapObject(ret);
+    }, arguments) };
+    imports.wbg.__wbindgen_is_undefined = function(arg0) {
+        const ret = getObject(arg0) === undefined;
+        return ret;
+    };
+    imports.wbg.__wbg_call_5da1969d7cd31ccd = function() { return handleError(function (arg0, arg1, arg2) {
+        const ret = getObject(arg0).call(getObject(arg1), getObject(arg2));
+        return addHeapObject(ret);
+    }, arguments) };
+    imports.wbg.__wbg_new_60f57089c7563e81 = function(arg0, arg1) {
+        try {
+            var state0 = {a: arg0, b: arg1};
+            var cb0 = (arg0, arg1) => {
+                const a = state0.a;
+                state0.a = 0;
+                try {
+                    return __wbg_adapter_42(a, state0.b, arg0, arg1);
+                } finally {
+                    state0.a = a;
+                }
+            };
+            const ret = new Promise(cb0);
+            return addHeapObject(ret);
+        } finally {
+            state0.a = state0.b = 0;
+        }
+    };
+    imports.wbg.__wbg_resolve_6e1c6553a82f85b7 = function(arg0) {
+        const ret = Promise.resolve(getObject(arg0));
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbg_then_3ab08cd4fbb91ae9 = function(arg0, arg1) {
+        const ret = getObject(arg0).then(getObject(arg1));
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+        throw new Error(getStringFromWasm0(arg0, arg1));
+    };
+    imports.wbg.__wbindgen_closure_wrapper97 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 33, __wbg_adapter_16);
+        return addHeapObject(ret);
+    };
+
+    return imports;
+}
+
+function __wbg_init_memory(imports, maybe_memory) {
+
+}
+
+function __wbg_finalize_init(instance, module) {
+    wasm = instance.exports;
+    cachedInt32Memory0 = null;
+    cachedUint8Memory0 = null;
+
+
+    return wasm;
+}
+
+function initSync(module) {
+    if (wasm !== undefined) return wasm;
+
+    const imports = __wbg_get_imports();
+
+    __wbg_init_memory(imports);
+
+    
+    if (typeof window === "object" && typeof window.document === "object") {
+        WebAssembly.compile(module).then(function (mod) {
+            WebAssembly.instantiate(mod, imports).then(function (inst){
+                __wbg_finalize_init(inst, mod);
+            });
+        });
+        return
     }
-};
 
-export function __wbg_resolve_6e1c6553a82f85b7(arg0) {
-    const ret = Promise.resolve(getObject(arg0));
-    return addHeapObject(ret);
-};
+    if (!(module instanceof WebAssembly.Module) ) {
+        module = new WebAssembly.Module(module);
+    }
 
-export function __wbg_then_3ab08cd4fbb91ae9(arg0, arg1) {
-    const ret = getObject(arg0).then(getObject(arg1));
-    return addHeapObject(ret);
-};
+    const instance = new WebAssembly.Instance(module, imports);
 
-export function __wbindgen_throw(arg0, arg1) {
-    throw new Error(getStringFromWasm0(arg0, arg1));
-};
+    return __wbg_finalize_init(instance, module);
+}
 
-export function __wbindgen_closure_wrapper97(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 33, __wbg_adapter_16);
-    return addHeapObject(ret);
-};
 
+const __toBinary = (function () {
+    
+
+    var table = new Uint8Array(128);
+    for (var i = 0; i < 64; i++) {
+        table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
+    }
+    
+    function _base64(data) {
+        var n = data.length;
+        var bytes = new Uint8Array((n - (data[n - 1] === "=") - (data[n - 2] === "=")) * 3 / 4 | 0);
+        var i = 0, j = 0;
+        while (i < n) {
+            var c0 = table[data.charCodeAt(i++)], c1 = table[data.charCodeAt(i++)];
+            var c2 = table[data.charCodeAt(i++)], c3 = table[data.charCodeAt(i++)];
+            bytes[j++] = c0 << 2 | c1 >> 4;
+            bytes[j++] = c1 << 4 | c2 >> 2;
+            bytes[j++] = c2 << 6 | c3;
+        }
+        return bytes;
+    }
+    
+    return function (info) {
+        if (!info) { return new Uint8Array(0) }
+        var decodeF = _base64;
+        decodeF = info[0] === 'base32768' ? base32768.decode : decodeF;
+        var bytes = decodeF(info[2]);
+        var out = new Uint8Array(info[1]);
+        return unbzip2.decodeU8(bytes, out);
+    };
+})();
+
+const bytes = __toBinary(digest_wasm_u16);
+
+initSync(bytes)

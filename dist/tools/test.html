@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./bzip2.js"></script>
+<script src="./unbzip2.js"></script>
+<script src="./base32768.js"></script>
+</head>
+<body>
+    <script>
+        // 字符串转byte
+        function stringToBytes(str) {
+            var array = new Uint8Array(str.length);
+            for (var i = 0, l = str.length; i < l; i++) {
+                array[i] = str.charCodeAt(i);
+            }
+            return array;
+        }
+
+        var a = unbzip2.decode(stringToBytes("BZh91AY&SYN\xEC\xE86\0\0\2Q\x80\0\x10@\0\6D\x90\x80 \x001\6LA\1\xA7\xA9\xA5\x80\xBB\x941\xF8\xBB\x92)\xC2\x84\x82wgA\xB0"));
+        if ( a =="hello world\n" ) console.log( 'Seems ok ' );
+
+        var data = "hello!hello!hello!";
+        console.log("stringToBytes=", stringToBytes(data));
+        
+        var compressed = new Uint8Array(BZip2.toBzip(data));
+        console.log("compressed=", compressed);
+        console.log("base32768.decode=", base32768.encode(compressed));
+
+        console.log("unbzip2.decode=", unbzip2.decode(compressed));
+        
+        var out = new Uint8Array(data.length);
+        console.log("unbzip2.decodeU8=", unbzip2.decodeU8(compressed, out));
+
+        
+        console.log("base32768.encode=", base32768.encode(out));
+        console.log("base32768.decode=", base32768.decode(base32768.encode(out)));
+
+        document.body.append("compress('" + unbzip2.decode(compressed) + "') = "+compressed + " (" + base32768.encode(compressed) + ")");
+    </script>
+</body>
+</html>
