@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Go wasm</title>
+</head>
+
+<body>
+	<!--
+	Add the following polyfill for Microsoft Edge 17/18 support:
+	<script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.min.js"></script>
+	(see https://caniuse.com/#feat=textencoder)
+	-->
+	<script src="wasm_exec.js"></script>
+	<script>
+		if (!WebAssembly.instantiateStreaming) { // polyfill
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
+
+		const go = new Go();
+		// Providing the environment object, used in WebAssembly.instantiateStreaming.
+        // This part goes after "const go = new Go();" declaration.
+        go.importObject.env = {
+            'add': function(x, y) {
+                return x + y
+            }
+            // ... other functions
+        }
+
+		let mod, inst;
+		WebAssembly.instantiateStreaming(fetch("wasm.wasm"), go.importObject).then(result => {
+			mod = result.module;
+			inst = result.instance;
+			console.log('WebAssembly inst:', inst);
+			
+			go.run(inst).catch(err => {
+    			console.error('WebAssembly go.run(inst) exited err:', err);
+			});
+
+            // Calling the multiply function:
+            console.log('multiplied two numbers:', inst.exports.multiply(5, 3));
+		}).catch(err => {
+			console.error('WebAssembly fetch("wasm.wasm")', err);
+		});
+	</script>
+</body>
+
+</html>
